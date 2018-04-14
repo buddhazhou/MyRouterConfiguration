@@ -1,1 +1,26 @@
 #Prepare environment
+wget ftp://ftp.infradead.org/pub/ocserv/ocserv-0.11.11.tar.xz
+tar -xf ocserv-0.11.11.tar.xz 
+cd ocserv-0.11.11
+cat README.md 
+apt-get install build-essential checkinstall
+apt install pkg-config
+apt install gnutls*
+apt install nettle*
+apt install libwrap0-dev libpam0g-dev liblz4-dev libseccomp-dev libreadline-dev libnl-route-3-dev libkrb5-dev liboath-dev libradcli-dev autogen libprotobuf-c0-dev libtalloc-dev libhttp-parser-dev libpcl1-dev libopts25-dev protobuf-c-compiler gperf  liblockfile-bin nuttcp lcov libuid-wrapper  libnss-wrapper libsocket-wrapper gss-ntlmssp libpam-oath
+./configure
+grep prefix Makefile
+make
+make install
+cd /etc/ocserv/doc/
+cp sample.config /etc/ocserv/config
+cp /home/ocserv-0.11.11/doc/systemd/socket-activated/ocserv.service /lib/systemd/system/ocserv.service
+chmod 777 ocserv.service 
+systemctl enable ocserv.service
+systemctl is-enabled ocserv.service
+vi /etc/systemd/system/ocserv.service 
+systemctl daemon-reload
+systemctl stop ocserv.socket
+systemctl disable ocserv.socket
+systemctl daemon-reload
+systemctl start ocserv.service

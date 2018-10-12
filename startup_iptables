@@ -1,0 +1,49 @@
+#!/bin/sh
+
+#Bypass GOOGLE CHINA IP 
+iptables -t nat -A PREROUTING -d 203.208.32.0/19 -j RETURN
+#Bypass Alpharacks VPS
+iptables -t nat -A PREROUTING -d 198.96.88.117/32 -j RETURN
+iptables -t nat -A PREROUTING -d 23.106.159.245/32 -j RETURN
+
+#Create & Flush Chain shadowsocks 
+iptables -t nat -N SHADOWSOCKS
+iptables -t nat -F SHADOWSOCKS
+
+# Ignore your shadowsocks server's addresses
+# It's very IMPORTANT, just be careful.
+SHADOWSOCKS_SERVER1=''
+SHADOWSOCKS_SERVER2=''
+iptables -t nat -A SHADOWSOCKS -d $SHADOWSOCKS_SERVER1 -j RETURN
+iptables -t nat -A SHADOWSOCKS -d $SHADOWSOCKS_SERVER2 -j RETURN
+
+# Ignore LANs IP address
+#iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
+iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 224.0.0.0/4 -j RETURN
+#iptables -t nat -A SHADOWSOCKS -d 240.0.0.0/4 -j RETURN
+
+#next line for GOOGLE hangouts
+iptables -t nat -A SHADOWSOCKS -p tcp -d 74.125.0.0/16 -j REDIRECT --to-ports 8080
+#next lines for telegram
+iptables -t nat -A SHADOWSOCKS -p tcp -d 91.108.56.0/22 -j REDIRECT --to-ports 8080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 91.108.4.0/22 -j REDIRECT --to-ports 8080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 149.154.172.0/22 -j REDIRECT --to-ports 8080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 149.154.168.0/22 -j REDIRECT --to-ports 8080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 149.154.164.0/22 -j REDIRECT --to-ports 8080
+iptables -t nat -A SHADOWSOCKS -p tcp -d 109.239.140.0/24 -j REDIRECT --to-ports 8080
+#Anything else would be returned
+iptables -t nat -A SHADOWSOCKS -p tcp -j RETURN
+
+#APPLY THE RULES
+iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+
+/jffs/opt/sbin/iptables  -t nat -A PREROUTING -p tcp -m set --match-set shadowsocks dst -j REDIRECT --to-port 8080
+
+#Reroute google DNS to local dns
+iptables -I PREROUTING -t nat -p udp -d 8.8.8.8 --dport 53 -j DNAT --to-destination 192.168.1.1
+iptables -I PREROUTING -t nat -p udp -d 8.8.4.4 --dport 53 -j DNAT --to-destination 192.168.1.1

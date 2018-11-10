@@ -1,0 +1,29 @@
+apt install shadowsocks-libev
+lsb_release -a
+pwd
+cd /home
+mkdir -p ~/build-area/
+apt-get install software-properties-common -y
+add-apt-repository ppa:max-c-lv/shadowsocks-libev -y
+apt-get update
+apt install shadowsocks-libev
+vim /etc/shadowsocks-libev/config.json
+systemctl status shadowsocks-libev
+systemctl start shadowsocks-libev
+systemctl status shadowsocks-libev
+cd /etc/systemd/system/
+ll
+vi /etc/default/shadowsocks-libev
+ll /etc/shadowsocks-libev/config.json
+cat /etc/shadowsocks-libev/config.json
+systemctl status shadowsocks-libev
+ll /usr/bin/ss-server
+/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json -u
+vi /etc/shadowsocks-libev/config.json
+/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json -u
+systemctl start shadowsocks-libev
+systemctl status shadowsocks-libev
+ps -ef|grep ss-server
+systemctl stop shadowsocks-libev
+systemctl start shadowsocks-libev
+exit

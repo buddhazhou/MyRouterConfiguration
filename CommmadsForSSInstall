@@ -1,8 +1,0 @@
-root@buddha:~# cat commmadinUse 
-apt-get update
-apt-get install python-pip
-pip install shadowsocks
-vi /etc/shadowsocks.json
-/usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
-/usr/local/bin/ssserver -c /etc/shadowsocks.json -d stop
-/usr/local/bin/ssserver -c /etc/shadowsocks.json -d start -qq
